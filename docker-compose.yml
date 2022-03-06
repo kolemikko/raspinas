@@ -1,0 +1,58 @@
+version: "3" # can be adapapted if necessary
+
+services:
+  heimdall:
+    image: linuxserver/heimdall
+    container_name: heimdall
+    environment:
+      - PUID=${USER_ID}
+      - PGID=${GROUP_ID}
+      - TZ=Europe/Berlin
+    volumes:
+      - ${PATH_TO_DISK}/appdata/heimdall:/config
+    ports:
+      - 80:80
+      - 443:443
+    restart: unless-stopped
+
+  portainer: # UI based management of Docker
+    image: portainer/portainer-ce
+    container_name: portainer
+    command: -H unix:///var/run/docker.sock
+    restart: unless-stopped
+    ports:
+      - 9000:9000
+      - 8000:8000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
+  plex:
+    image: linuxserver/plex
+    container_name: plex
+    network_mode: host
+    environment:
+      - PUID=${USER_ID}
+      - PGID=${GROUP_ID}
+      - VERSION=docker
+      - UMASK_SET=022 #optional
+      - PLEX_CLAIM= #optional
+    volumes:
+      - ${PATH_TO_DISK}/appdata/plex:/config
+      - ${PATH_TO_DISK}/media/tv:/tv
+      - ${PATH_TO_DISK}/media/movies:/movies
+      - ${PATH_TO_DISK}/media/music:/music
+      - ${PATH_TO_DISK}/appdata/plex:/transcode
+    restart: unless-stopped
+
+  cloudcmd: # UI based filemanager
+    image: coderaiser/cloudcmd:latest-alpine
+    container_name: cloudcmd
+    ports:
+      - 8008:8000
+    volumes:
+      - ~:/root
+      - /:/mnt/fs
+
+volumes:
+  portainer_data:
