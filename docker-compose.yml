@@ -30,8 +30,8 @@ services:
   plex:
     image: linuxserver/plex
     container_name: plex
-    network_mode: host
     restart: unless-stopped
+    network_mode: host
     environment:
       PUID: ${USER_ID}
       PGID: ${GROUP_ID}
@@ -46,13 +46,10 @@ services:
     restart: unless-stopped
     network_mode: host
     environment:
-      ServerIP: ${PIHOLE_IPADDRESS}
+      ServerIP: ${PIHOLE_IP}
       TZ: ${TIMEZONE}
       VIRTUAL_HOST: ${PIHOLE_HOST}
       WEBPASSWORD: ${PIHOLE_WEBPASSWORD}
-      DNSMASQ_LISTENING: all
-      DNS1: 127.0.0.1
-      DNS2: 1.1.1.1
     volumes:
       - pihole-data:/etc/pihole/
       - pihole-dnsmasq:/etc/dnsmasq.d/
