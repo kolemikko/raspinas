@@ -1,25 +1,25 @@
-version: "3" # can be adapapted if necessary
+version: "3.9"
 
 services:
   heimdall:
     image: linuxserver/heimdall
     container_name: heimdall
+    restart: unless-stopped
     environment:
-      - PUID=${USER_ID}
-      - PGID=${GROUP_ID}
-      - TZ=Europe/Berlin
-    volumes:
-      - ${PATH_TO_DISK}/appdata/heimdall:/config
+      PUID: ${USER_ID}
+      PGID: {GROUP_ID}
+      TZ: ${TIMEZONE}
     ports:
       - 80:80
       - 443:443
-    restart: unless-stopped
+    volumes:
+      - ${PATH_TO_DISK}/appdata/heimdall:/config
 
-  portainer: # UI based management of Docker
+  portainer:
     image: portainer/portainer-ce
     container_name: portainer
-    command: -H unix:///var/run/docker.sock
     restart: unless-stopped
+    command: -H unix:///var/run/docker.sock
     ports:
       - 9000:9000
       - 8000:8000
@@ -31,28 +31,35 @@ services:
     image: linuxserver/plex
     container_name: plex
     network_mode: host
+    restart: unless-stopped
     environment:
-      - PUID=${USER_ID}
-      - PGID=${GROUP_ID}
-      - VERSION=docker
-      - UMASK_SET=022 #optional
-      - PLEX_CLAIM= #optional
+      PUID: ${USER_ID}
+      PGID: ${GROUP_ID}
+      VERSION: docker
     volumes:
       - ${PATH_TO_DISK}/appdata/plex:/config
-      - ${PATH_TO_DISK}/media/tv:/tv
       - ${PATH_TO_DISK}/media/movies:/movies
-      - ${PATH_TO_DISK}/media/music:/music
-      - ${PATH_TO_DISK}/appdata/plex:/transcode
-    restart: unless-stopped
 
-  cloudcmd: # UI based filemanager
-    image: coderaiser/cloudcmd:latest-alpine
-    container_name: cloudcmd
-    ports:
-      - 8008:8000
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      ServerIP: ${PIHOLE_IPADDRESS}
+      TZ: ${TIMEZONE}
+      VIRTUAL_HOST: ${PIHOLE_HOST}
+      WEBPASSWORD: ${PIHOLE_WEBPASSWORD}
+      DNSMASQ_LISTENING: all
+      DNS1: 127.0.0.1
+      DNS2: 1.1.1.1
     volumes:
-      - ~:/root
-      - /:/mnt/fs
+      - pihole-data:/etc/pihole/
+      - pihole-dnsmasq:/etc/dnsmasq.d/
+    cap_add:
+      - NET_ADMIN
 
 volumes:
   portainer_data:
+  pihole-data:
+  pihole-dnsmasq:
