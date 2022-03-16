@@ -13,7 +13,7 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ${PATH_TO_DISK}/appdata/heimdall:/config
+      - heimdall-data:/config
 
   portainer:
     image: portainer/portainer-ce
@@ -25,7 +25,7 @@ services:
       - 8000:8000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
+      - portainer-data:/data
 
   plex:
     image: linuxserver/plex
@@ -37,12 +37,12 @@ services:
       PGID: ${GROUP_ID}
       VERSION: docker
     volumes:
-      - ${PATH_TO_DISK}/appdata/plex:/config
-      - ${PATH_TO_DISK}/media/movies:/movies
+      - plex-data:/config
+      - ${PATH_TO_MOVIES}:/movies
 
   pihole:
-    container_name: pihole
     image: pihole/pihole:latest
+    container_name: pihole
     restart: unless-stopped
     network_mode: host
     environment:
@@ -50,6 +50,10 @@ services:
       TZ: ${TIMEZONE}
       VIRTUAL_HOST: ${PIHOLE_HOST}
       WEBPASSWORD: ${PIHOLE_WEBPASSWORD}
+    ports:
+      - 53:53/tcp
+      - 53:53/udp
+      - 8008:8008/tcp
     volumes:
       - pihole-data:/etc/pihole/
       - pihole-dnsmasq:/etc/dnsmasq.d/
@@ -57,6 +61,8 @@ services:
       - NET_ADMIN
 
 volumes:
-  portainer_data:
+  heimdall-data:
+  portainer-data:
+  plex-data:
   pihole-data:
   pihole-dnsmasq:
