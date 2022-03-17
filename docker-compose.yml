@@ -50,8 +50,8 @@ services:
       VIRTUAL_HOST: ${PIHOLE_HOST}
       WEBPASSWORD: ${PIHOLE_WEBPASSWORD}
     ports:
-      - 53:53/tcp
-      - 53:53/udp
+      - 8010:8010/tcp
+      - 8010:8010/udp
       - 8008:8008/tcp
     volumes:
       - pihole-data:/etc/pihole/
