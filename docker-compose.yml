@@ -10,7 +10,7 @@ services:
       PGID: ${GROUP_ID}
       TZ: ${TIMEZONE}
     ports:
-      - 80:80
+      - 8081:8081
       - 443:443
     volumes:
       - heimdall-data:/config
