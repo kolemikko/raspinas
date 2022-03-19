@@ -13,9 +13,9 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - heimdall-data:/config
+      - ${PATH_TO_DISK}/appdata/heimdall:/config
 
-portainer:
+  portainer:
     image: portainer/portainer-ce
     container_name: portainer
     command: -H unix:///var/run/docker.sock
@@ -25,7 +25,7 @@ portainer:
       - 8000:8000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
+      - ${PATH_TO_DISK}/appdata/portainer:/data
 
   plex:
     image: linuxserver/plex
@@ -37,7 +37,7 @@ portainer:
       PGID: ${GROUP_ID}
       VERSION: docker
     volumes:
-      - plex-data:/config
+      - ${PATH_TO_DISK}/appdata/plex:/config
       - ${PATH_TO_MOVIES}:/movies
 
   pihole:
@@ -60,8 +60,5 @@ portainer:
       - NET_ADMIN
 
 volumes:
-  heimdall-data:
-  portainer-data:
-  plex-data:
   pihole-data:
   pihole-dnsmasq:
