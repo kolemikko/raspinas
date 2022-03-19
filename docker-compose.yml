@@ -10,7 +10,7 @@ services:
       PGID: ${GROUP_ID}
       TZ: ${TIMEZONE}
     ports:
-      - 80:80
+      - 8111:80
       - 443:443
     volumes:
       - ${PATH_TO_DISK}/appdata/heimdall:/config
@@ -25,7 +25,7 @@ services:
       - 8000:8000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ${PATH_TO_DISK}/appdata/portainer:/data
+      - portainer-data:/data
 
   plex:
     image: linuxserver/plex
@@ -60,5 +60,6 @@ services:
       - NET_ADMIN
 
 volumes:
+  portainer-data:
   pihole-data:
   pihole-dnsmasq:
