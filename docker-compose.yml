@@ -7,9 +7,9 @@ networks:
       parent: ovs_eth0
     ipam:
       config:
-        subnet: ${PIHOLE_SUBNET_IP}
-        gateway: ${PIHOLE_GATEWAY_IP}
-        ip-range: ${PIHOLE_IP_RANGE}
+        - subnet: ${PIHOLE_SUBNET_IP}
+          gateway: ${PIHOLE_GATEWAY_IP}
+          ip-range: ${PIHOLE_IP_RANGE}
 
 services:
   heimdall:
