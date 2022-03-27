@@ -1,5 +1,16 @@
 version: "3.9"
 
+networks:
+  pihole_network:
+    driver: macvlan
+    driver_opts:
+      parent: ovs_eth0
+    ipam:
+      config:
+        subnet: ${PIHOLE_SUBNET_IP}
+        gateway: ${PIHOLE_GATEWAY_IP}
+        ip-range: ${PIHOLE_IP_RANGE}
+
 services:
   heimdall:
     image: linuxserver/heimdall
@@ -45,13 +56,20 @@ services:
     container_name: pihole
     restart: unless-stopped
     environment:
-      ServerIP: ${PIHOLE_IP}
+      ServerIP: ${NAS_IP}
       TZ: ${TIMEZONE}
       WEBPASSWORD: ${PIHOLE_WEBPASSWORD}
+    networks:
+      - pihole_network
+    dns:
+      - 127.0.0.1
+      - 8.8.8.8
     ports:
-      - 8010:53/tcp
-      - 8010:53/udp
-      - 8008:80/tcp
+      - 443/tcp
+      - 53/tcp
+      - 53/udp
+      - 67/udp
+      - 80/tcp
     volumes:
       - pihole-data:/etc/pihole/
       - pihole-dnsmasq:/etc/dnsmasq.d/
