@@ -9,7 +9,7 @@ networks:
       config:
         - subnet: ${PIHOLE_SUBNET_IP}
           gateway: ${PIHOLE_GATEWAY_IP}
-          ip-range: ${PIHOLE_IP_RANGE}
+          ip_range: ${PIHOLE_IP_RANGE}
 
 services:
   heimdall:
