@@ -9,7 +9,6 @@ networks:
       config:
         - subnet: ${PIHOLE_SUBNET_IP}
           gateway: ${PIHOLE_GATEWAY_IP}
-          ip_range: ${PIHOLE_IP_RANGE}
 
 services:
   heimdall:
@@ -60,7 +59,8 @@ services:
       TZ: ${TIMEZONE}
       WEBPASSWORD: ${PIHOLE_WEBPASSWORD}
     networks:
-      - pihole_network
+      pihole_network:
+        ipv4_address: ${PIHOLE_IP}
     dns:
       - 127.0.0.1
       - 8.8.8.8
