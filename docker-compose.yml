@@ -34,7 +34,7 @@ services:
     environment:
       VIRTUAL_HOST: pihole.exampledomain
       ServerIP: ${PIHOLE_IP}
-      TZ: ${TIMEZONE}
+      TZ: ${TZ}
       WEBPASSWORD: ${PIHOLE_WEBPASSWORD}
     networks:
       pihole_network:
@@ -52,7 +52,21 @@ services:
       - pihole-data:/etc/pihole/
       - pihole-dnsmasq:/etc/dnsmasq.d/
 
+  filebrowser:
+    image: hurlenko/filebrowser
+    container_name: filebrowser
+    user: "${UID}:${GID}"
+    restart: unless-stopped
+    environment:
+      - FB_BASEURL=/filebrowser
+    ports:
+      - 443:8080
+    volumes:
+      - ${PATH_TO_DISK}:/data
+      - filebrowser-data:/config
+
 volumes:
   portainer-data:
   pihole-data:
   pihole-dnsmasq:
+  filebrowser-data:
