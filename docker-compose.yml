@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3"
 
 networks:
   pihole_network:
@@ -9,53 +9,31 @@ networks:
       config:
         - subnet: ${PIHOLE_SUBNET_IP}
           gateway: ${PIHOLE_GATEWAY_IP}
+          ip_range: ${PIHOLE_IP_RANGE}
 
 services:
-  heimdall:
-    image: linuxserver/heimdall
-    container_name: heimdall
-    restart: unless-stopped
-    environment:
-      PUID: ${USER_ID}
-      PGID: ${GROUP_ID}
-      TZ: ${TIMEZONE}
-    ports:
-      - 8111:80
-      - 443:443
-    volumes:
-      - ${PATH_TO_DISK}/appdata/heimdall:/config
-
   portainer:
     image: portainer/portainer-ce
     container_name: portainer
     command: -H unix:///var/run/docker.sock
     restart: unless-stopped
     ports:
-      - 9000:9000
-      - 8000:8000
+      - 9443:9443
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer-data:/data
-
-  plex:
-    image: linuxserver/plex
-    container_name: plex
-    restart: unless-stopped
-    network_mode: host
-    environment:
-      PUID: ${USER_ID}
-      PGID: ${GROUP_ID}
-      VERSION: docker
-    volumes:
-      - ${PATH_TO_DISK}/appdata/plex:/config
-      - ${PATH_TO_MOVIES}:/movies
 
   pihole:
     image: pihole/pihole:latest
     container_name: pihole
     restart: unless-stopped
+    hostname: pihole
+    domainname: exampledomain
+    cap_add:
+      - NET_ADMIN
     environment:
-      ServerIP: ${NAS_IP}
+      VIRTUAL_HOST: pihole.exampledomain
+      ServerIP: ${PIHOLE_IP}
       TZ: ${TIMEZONE}
       WEBPASSWORD: ${PIHOLE_WEBPASSWORD}
     networks:
@@ -65,16 +43,14 @@ services:
       - 127.0.0.1
       - 8.8.8.8
     ports:
-      - 443/tcp
-      - 53/tcp
       - 53/udp
       - 67/udp
+      - 443/tcp
+      - 53/tcp
       - 80/tcp
     volumes:
       - pihole-data:/etc/pihole/
       - pihole-dnsmasq:/etc/dnsmasq.d/
-    cap_add:
-      - NET_ADMIN
 
 volumes:
   portainer-data:
