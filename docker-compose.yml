@@ -62,7 +62,7 @@ services:
     ports:
       - 443:8080
     volumes:
-      - ${PATH_TO_DISK}:/data
+      - ${PATH_TO_STORAGE}:/data
       - filebrowser-data:/config
 
 volumes:
