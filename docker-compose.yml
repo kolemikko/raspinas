@@ -65,8 +65,41 @@ services:
       - ${PATH_TO_STORAGE}:/data
       - filebrowser-data:/config
 
+  plex:
+    image: linuxserver/plex:latest
+    container_name: plex
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      PUID: ${UID}
+      PGID: ${GID}
+      TZ: ${TZ}
+      VERSION: docker
+    volumes:
+      - plex-data:/config
+      - ${PATH_TO_STORAGE}/Movies:/movies
+
+  transmission:
+    image: linuxserver/transmission:latest
+    container_name: transmission
+    restart: unless-stopped
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+    volumes:
+      - transmission-data:/config
+      - ${PATH_TO_STORAGE}/Downloads:/downloads
+      - ${PATH_TO_STORAGE}/Temp:/watch
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+
 volumes:
   portainer-data:
   pihole-data:
   pihole-dnsmasq:
   filebrowser-data:
+  plex-data:
+  transmission-data:
