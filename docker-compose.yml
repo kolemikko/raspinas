@@ -12,6 +12,20 @@ networks:
           ip_range: ${PIHOLE_IP_RANGE}
 
 services:
+  heimdall:
+    image: linuxserver/heimdall:2.5.6
+    container_name: heimdall
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+    volumes:
+      - heimdall-data:/config
+    ports:
+      - 80:80
+      - 443:443
+    restart: unless-stopped
+
   portainer:
     image: portainer/portainer-ce
     container_name: portainer
@@ -60,7 +74,7 @@ services:
     environment:
       - FB_BASEURL=/filebrowser
     ports:
-      - 443:8080
+      - 445:8080
     volumes:
       - ${PATH_TO_STORAGE}:/data
       - filebrowser-data:/config
@@ -103,6 +117,7 @@ services:
       - 9091:9091
 
 volumes:
+  heimdall-data:
   portainer-data:
   pihole-data:
   pihole-dnsmasq:
