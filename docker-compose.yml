@@ -1,4 +1,4 @@
-version: "3"
+version: "3.3"
 
 networks:
   pihole_network:
@@ -8,7 +8,7 @@ networks:
     ipam:
       config:
         - subnet: ${PIHOLE_SUBNET_IP}
-          gateway: ${PIHOLE_GATEWAY_IP}
+          gateway: ${GATEWAY_IP}
           ip_range: ${PIHOLE_IP_RANGE}
 
 services:
@@ -79,22 +79,28 @@ services:
       - plex-data:/config
       - ${PATH_TO_STORAGE}/Movies:/movies
 
-  transmission:
-    image: linuxserver/transmission:latest
-    container_name: transmission
+  transmission-openvpn:
+    image: haugene/transmission-openvpn
+    container_name: transmission-openvpn
     restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    sysctls:
+      - "net.ipv6.conf.all.disable_ipv6=0"
     environment:
+      - OPENVPN_PROVIDER=${VPN_PROV}
+      - OPENVPN_CONFIG=${VPN_CONFIG}
+      - OPENVPN_USERNAME=${VPN_USERNAME}
+      - OPENVPN_PASSWORD=${VPN_PASSWORD}
+      - LOCAL_NETWORK=${TRSN_LOCAL_IP}
       - PUID=${UID}
       - PGID=${GID}
       - TZ=${TZ}
     volumes:
-      - transmission-data:/config
-      - ${PATH_TO_STORAGE}/Downloads:/downloads
-      - ${PATH_TO_STORAGE}/Temp:/watch
+      - transmission-openvpn-data:/config
+      - ${PATH_TO_STORAGE}/Downloads:/data
     ports:
       - 9091:9091
-      - 51413:51413
-      - 51413:51413/udp
 
 volumes:
   portainer-data:
@@ -102,4 +108,4 @@ volumes:
   pihole-dnsmasq:
   filebrowser-data:
   plex-data:
-  transmission-data:
+  transmission-openvpn-data:
