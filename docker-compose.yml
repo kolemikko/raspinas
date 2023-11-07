@@ -93,6 +93,20 @@ services:
       - plex-data:/config
       - ${PATH_TO_STORAGE}/Movies:/movies
 
+  jellyfin:
+    image: linuxserver/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+    volumes:
+      - jellyfin-data:/config
+      - ${PATH_TO_STORAGE}/Films:/data/movies
+    ports:
+      - 8096:8096
+    restart: unless-stopped
+
   transmission-openvpn:
     image: haugene/transmission-openvpn
     container_name: transmission-openvpn
@@ -122,5 +136,6 @@ volumes:
   pihole-data:
   pihole-dnsmasq:
   filebrowser-data:
+  jellyfin-data:
   plex-data:
   transmission-openvpn-data:
