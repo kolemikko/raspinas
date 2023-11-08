@@ -79,20 +79,6 @@ services:
       - ${PATH_TO_STORAGE}:/data
       - filebrowser-data:/config
 
-  plex:
-    image: linuxserver/plex:latest
-    container_name: plex
-    restart: unless-stopped
-    network_mode: host
-    environment:
-      PUID: ${UID}
-      PGID: ${GID}
-      TZ: ${TZ}
-      VERSION: docker
-    volumes:
-      - plex-data:/config
-      - ${PATH_TO_STORAGE}/Movies:/movies
-
   jellyfin:
     image: linuxserver/jellyfin:latest
     container_name: jellyfin
@@ -102,7 +88,8 @@ services:
       - TZ=${TZ}
     volumes:
       - jellyfin-data:/config
-      - ${PATH_TO_STORAGE}/Films:/data/movies
+      - ${PATH_TO_STORAGE}/Movies:/data/movies
+      - ${PATH_TO_STORAGE}/Videos:/data/videos
     ports:
       - 8096:8096
     restart: unless-stopped
@@ -137,5 +124,4 @@ volumes:
   pihole-dnsmasq:
   filebrowser-data:
   jellyfin-data:
-  plex-data:
   transmission-openvpn-data:
