@@ -82,6 +82,7 @@ services:
   jellyfin:
     image: linuxserver/jellyfin:latest
     container_name: jellyfin
+    restart: unless-stopped
     environment:
       - PUID=${UID}
       - PGID=${GID}
@@ -89,10 +90,25 @@ services:
     volumes:
       - jellyfin-data:/config
       - ${PATH_TO_STORAGE}/Movies:/data/movies
+      - ${PATH_TO_STORAGE}/Series:/data/series
       - ${PATH_TO_STORAGE}/Videos:/data/videos
     ports:
       - 8096:8096
+
+  radarr:
+    image: linuxserver/radarr:latest
+    container_name: radarr
     restart: unless-stopped
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+    volumes:
+      - radarr-data:/config
+      - ${PATH_TO_STORAGE}/Movies:/movies
+      #- /path/to/downloadclient-downloads:/downloads #optional
+    ports:
+      - 7878:7878
 
   transmission-openvpn:
     image: haugene/transmission-openvpn
@@ -124,4 +140,5 @@ volumes:
   pihole-dnsmasq:
   filebrowser-data:
   jellyfin-data:
+  radarr-data:
   transmission-openvpn-data:
