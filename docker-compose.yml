@@ -125,6 +125,21 @@ services:
     ports:
       - 8989:8989
 
+  bazarr:
+    image: linuxserver/bazarr:latest
+    container_name: bazarr
+    restart: unless-stopped
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+    volumes:
+      - bazarr-data:/config
+      - ${PATH_TO_STORAGE}/Series:/tv
+      - ${PATH_TO_STORAGE}/Movies:/movies
+    ports:
+      - 6767:6767
+
   jackett:
     image: linuxserver/jackett:latest
     container_name: jackett
@@ -172,5 +187,6 @@ volumes:
   jellyfin-data:
   radarr-data:
   sonarr-data:
+  bazarr-data:
   jackett-data:
   transmission-openvpn-data:
