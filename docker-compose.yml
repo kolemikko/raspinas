@@ -106,9 +106,39 @@ services:
     volumes:
       - radarr-data:/config
       - ${PATH_TO_STORAGE}/Movies:/movies
-      #- /path/to/downloadclient-downloads:/downloads #optional
+      - ${PATH_TO_STORAGE}/Downloads:/data
     ports:
       - 7878:7878
+
+  sonarr:
+    image: linuxserver/sonarr:latest
+    container_name: sonarr
+    restart: unless-stopped
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+    volumes:
+      - sonarr-data:/config
+      - ${PATH_TO_STORAGE}/Series:/tv
+      - ${PATH_TO_STORAGE}/Downloads:/data
+    ports:
+      - 8989:8989
+
+  jackett:
+    image: linuxserver/jackett:latest
+    container_name: jackett
+    restart: unless-stopped
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TZ}
+      - AUTO_UPDATE=true
+    volumes:
+      - jackett-data:/config
+      - ${PATH_TO_STORAGE}/Downloads/watch:/downloads
+    ports:
+      - 9117:9117
 
   transmission-openvpn:
     image: haugene/transmission-openvpn
@@ -141,4 +171,6 @@ volumes:
   filebrowser-data:
   jellyfin-data:
   radarr-data:
+  sonarr-data:
+  jackett-data:
   transmission-openvpn-data:
