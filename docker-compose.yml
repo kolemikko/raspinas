@@ -76,8 +76,8 @@ services:
     ports:
       - 445:8080
     volumes:
-      - ${PATH_TO_STORAGE}:/data
       - filebrowser-data:/config
+      - ${PATH_TO_STORAGE}:/data
 
   jellyfin:
     image: linuxserver/jellyfin:latest
